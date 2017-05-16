@@ -20,7 +20,9 @@ if(!linkDb){
 else
 	echo 'Успешно соединились с БД <br>';
 
-echo "<br> Hello World! "
-
 mysql_set_charset('utf8'); // кодировка
+
+echo 'Hello World! '
+
+
 ?>
