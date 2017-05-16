@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/setRouteId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/setRouteId"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/saveReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/saveReminder" />
+
+  	<EditText
+  	    android:id="@+id/setDuration"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_below="@+id/setDurationView"
+  	    android:ems="10"
+  	    android:inputType="number" />
+
+  	<Spinner
+  	    android:id="@+id/spinner"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_below="@+id/setRouteId" />
+
+  	<TextView
+  	    android:id="@+id/setDurationView"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_below="@+id/spinner"
+  	    android:text="@string/setDurationView"
+  	    android:textSize="20sp" />
+
+</RelativeLayout>

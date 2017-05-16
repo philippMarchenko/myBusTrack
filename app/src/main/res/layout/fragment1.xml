@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+	 <com.google.android.gms.maps.MapView
+	     android:id="@+id/mapView"
+	     android:layout_width="match_parent"
+	     android:layout_height="match_parent"
+	     android:layout_alignParentLeft="true"
+	     android:layout_alignParentTop="true" >
+
+    </com.google.android.gms.maps.MapView>
+
+    <Button
+        android:id="@+id/butChoosePoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:onClick="onClickSetPoint"
+        android:text="Зафиксировать точку" />
+
+    <TextView
+        android:id="@+id/distanceMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/distanceMapView"
+        android:layout_alignBottom="@+id/distanceMapView"
+        android:layout_alignParentLeft="true"
+        android:text="@string/distanceMap" />
+
+    <TextView
+        android:id="@+id/durationMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/distanceMap"
+        android:text="@string/durationMap" />
+
+    <TextView
+        android:id="@+id/distanceMapView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="18dp"
+        android:layout_toRightOf="@+id/durationMap"
+        android:text="@string/distanceMapView" />
+
+    <TextView
+        android:id="@+id/durationMapView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/durationMap"
+        android:layout_alignBottom="@+id/durationMap"
+        android:layout_alignLeft="@+id/distanceMapView"
+        android:text="@string/durationMapView" />
+
+</RelativeLayout>

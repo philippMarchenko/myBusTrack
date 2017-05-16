@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <TextView
+        android:id="@+id/statusReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/statusReminder" 
+ 		android:textSize="20sp" />
+    <TextView
+        android:id="@+id/routeId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/statusReminder"
+        android:text="@string/routeId"
+        android:visibility="visible"
+        android:textSize="20sp" />
+  	<TextView
+  	    android:id="@+id/duration"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_below="@+id/routeId"
+  	    android:layout_marginTop="52dp"
+  	    android:text="@string/duration"
+  	    android:textSize="20sp"
+  	    android:visibility="visible" />
+  	
+  		
+  			<TextView
+   	    android:id="@+id/distance"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignParentLeft="true"
+   	    android:layout_below="@+id/routeId"
+   	    android:text="@string/distance"
+   	    android:textSize="20sp"
+   	    android:visibility="visible" />
+
+
+
+   	<TextView
+   	    android:id="@+id/durationReal"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignParentLeft="true"
+   	    android:layout_below="@+id/distance"
+   	    android:text="@string/durationReal"
+   	    android:textSize="20sp"
+   	    android:visibility="visible" />
+
+   	<TextView
+   	    android:id="@+id/distanceView"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignLeft="@+id/routeIdView"
+   	    android:layout_below="@+id/routeIdView"
+   	    android:text="0 км"
+   	    android:textSize="20sp"
+   	    android:visibility="visible" />
+
+   
+  	<TextView
+  	    android:id="@+id/durationRealView"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignBaseline="@+id/durationReal"
+  	    android:layout_alignBottom="@+id/durationReal"
+  	    android:layout_alignLeft="@+id/distanceView"
+  	    android:text="0 мин."
+  	    android:textSize="20sp"
+  	    android:visibility="visible" />
+  	<TextView
+  	    android:id="@+id/durationView"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignBaseline="@+id/duration"
+  	    android:layout_alignBottom="@+id/duration"
+  	    android:layout_alignLeft="@+id/routeIdView"
+  	    android:text="0 мин."
+  	    android:visibility="visible"
+  	    android:textSize="20sp" />
+
+  	<TextView
+  	    android:id="@+id/routeIdView"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_above="@+id/duration"
+  	    android:layout_marginLeft="22dp"
+  	    android:layout_toRightOf="@+id/duration"
+  	    android:text="Мой маршрут"
+  	    android:textSize="20sp"
+  	    android:visibility="visible" />
+
+  	<Button
+  	    android:id="@+id/refactorReminder"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignParentBottom="true"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_alignParentRight="true"
+  	    android:layout_marginBottom="43dp"
+  	    android:text="@string/refactorReminder" />
+
+  	<Button
+  	    android:id="@+id/delReminder"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignParentBottom="true"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_alignParentRight="true"
+  	    android:text="@string/delReminder" />
+
+  	<Button
+  	    android:id="@+id/addReminder"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_alignBaseline="@+id/refactorReminder"
+  	    android:layout_alignBottom="@+id/refactorReminder"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_alignParentRight="true"
+  	    android:text="@string/addReminder" />
+
+  	<CheckBox
+  	    android:id="@+id/checkReminder"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:layout_above="@+id/refactorReminder"
+  	    android:layout_alignParentLeft="true"
+  	    android:layout_alignParentRight="true"
+  	    android:layout_below="@+id/duration"
+  	    android:layout_marginBottom="188dp"
+  	    android:text="CheckBox" />
+
+</RelativeLayout>
