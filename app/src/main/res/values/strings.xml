@@ -20,5 +20,16 @@
     <string name="delReminder">Удалить</string>
     <string name="addReminder">Добавить</string>
     <string name="setDurationView">Укажите время</string>
-    <string name="setRouteId">Выберите маршрут</string>   
+    <string name="setRouteId">Выберите маршрут</string>
+
+    <string name="spinerPrompt">Маршрут</string>
+
+    <string name="number_picker_formatter">%02d</string>
+
+    <!-- Font -->
+    <string name="roboto_regular">sans-serif</string>
+    <string name="roboto_light">sans-serif-light</string>
+    <string name="roboto_condensed">sans-serif-condensed</string>
+    <string name="roboto_thin">sans-serif-thin</string>
+    <string name="roboto_medium">sans-serif-medium</string>
 </resources>

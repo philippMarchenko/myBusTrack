@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <biz.kasual.materialnumberpicker.MaterialNumberPicker
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:npMinValue="1"
+        app:npMaxValue="50"
+        app:npDefaultValue="10"
+        app:npBackgroundColor="@color/colorAccent"
+        app:npSeparatorColor="@color/colorAccent"
+        app:npTextColor="@color/colorPrimary"
+        app:npTextSize="25sp"/>
+    </RelativeLayout>

@@ -45,6 +45,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -53,7 +54,9 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.EditText; import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.text.format.Time;
 
@@ -63,10 +66,15 @@ import com.google.android.gms.maps.model.LatLng;
 
 import retrofit2.Retrofit;
 
+
+
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener,
         MapViewFragment.onSomeEventListener,
         Fragment2.onFragment2Listener,
-        Fragment3.onFragment3Listener {
+        AddReminderFragment.IAddReminderFragment {
+
+    public static String[] mEntries = new String[]{"Саловка - Кременчук","Мотрине - Бригадирівка","Карпівка - Махнівка","Кобилячок - Пришиб", "Петрашівка - Київ"};;
+
 
     public static final String LOG_TAG = "myLogs";
     public static final String LOG_TAG_DB = "dbLogs";
@@ -130,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     //  Time time = new Time(Time.getCurrentTimezone());
     // Date date = new Date();
     Fragment2 frag2;
-    Fragment3 frag3;
+    AddReminderFragment frag3;
     Long last_time; // время последней записи в БД, отсекаем по нему что нам/ тянуть с сервера, а что уже есть
 
     Timer myTimer = new Timer(); // Создаем таймер
@@ -181,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 1000 * 10, 0,locationListener);
 
         frag2 = new Fragment2();
-        frag3 = new Fragment3();
+        frag3 = new AddReminderFragment(this);
 
       //  ft = getFragmentManager().beginTransaction();
        // ft.add(R.id.container, mapViewFragment);
@@ -233,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(mapViewFragment, "Карта");
-        adapter.addFragment(new Fragment2(), "Настройки");
+        adapter.addFragment(new ReminderFragmentBase(), "Напоминания");
 
         viewPager.setAdapter(adapter);
     }
@@ -351,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 if(runTimer){
                     switch(currentFragmentView)	{
                         case 0:
+                            updatelist();
                             goReqest();
                             //if(sendNoty){
                             //	sendNoty = false;
@@ -446,6 +455,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             };
 
         }, 0L, 3L * 1000); // интервал - 60000 миллисекунд, 0 миллисекунд до первого запуска.
+    }
+    public void updatelist(){
+
+        final Intent intent = new Intent(ReminderFragment.updateList);
+
+        intent.putExtra("durationReal"," 15 мин");
+        intent.putExtra("distance"," 123 км");    //обновили граффик,
+        intent.putExtra("routName", mEntries[1]);    //обновили граффик,
+        sendBroadcast(intent);
     }
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -732,7 +750,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     @Override
     public void onClickDelEvent() {
 
-        Reminders.deInitReminder();
+     //  Reminders.deInitReminder();
 
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -745,7 +763,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         frag2.setInvisibleValues();
     }
-    @Override
+   /* @Override
     public void onClickSaveEvent(String strSpin,String strEt) {
 
         currentFragmentView = 1;
@@ -807,15 +825,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         } else
             Log.d(LOG_TAG_DB, "0 rows");
         c.close();
-        /*// вставляем запись и получаем ее ID
-    long rowID = db.insert("mytable", null, cv);*/
+        *//*// вставляем запись и получаем ее ID
+    long rowID = db.insert("mytable", null, cv);*//*
 
         // Log.d(LOG_TAG_DB, "row inserted, ID = " + rowID);
         // закрываем подключение к БД
         dbHelper.close();
 
         frag2.setValues(routName,distance,duration,durationReal);
-    }
+    }*/
     @Override
     public void onClickcheckReminder(int i) {
 
@@ -829,6 +847,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         int updCount = db.update("mytable", cv, "routName = ?",
                 new String[] { routName });
         c.close();
+
+    }
+
+    @Override
+    public void onClickSaveEvent() {
 
     }
 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sample="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:elevation="8dp"
+        card_view:cardCornerRadius="8dp"
+        card_view:cardBackgroundColor="@color/accent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+
+            <TextView
+                android:text="distance"
+                android:textSize="14sp"
+                style="@android:style/Widget.TextView"
+                android:textColor="@color/material_drawer_dark_header_selection_text"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/route"
+                android:layout_alignLeft="@+id/route"
+                android:id="@+id/distance"
+                android:layout_marginStart="10dp" />
+
+            <TextView
+                android:textSize="14sp"
+                style="@android:style/Widget.TextView"
+                android:textColor="@color/material_drawer_dark_header_selection_text"
+                android:textStyle="bold"
+                android:text="duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/duration"
+                android:layout_below="@+id/distance"
+                android:layout_alignLeft="@+id/distance" />
+
+            <TextView
+                android:textSize="14sp"
+                style="@android:style/Widget.TextView"
+                android:textColor="@color/material_drawer_dark_header_selection_text"
+                android:textStyle="bold"
+                android:text="durationReal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/durationReal"
+                android:layout_below="@+id/duration"
+                android:layout_alignLeft="@+id/duration" />
+
+            <TextView
+                android:text="route"
+                android:layout_width="wrap_content"
+                android:id="@+id/route"
+                android:textSize="30sp"
+                style="@android:style/Widget.TextView"
+                android:textColor="@color/material_drawer_dark_header_selection_text"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true" />
+
+            <Button
+                android:text="Удалить"
+                android:layout_width="wrap_content"
+                android:textColor="@color/material_drawer_dark_header_selection_text"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="14dp"
+                android:drawableLeft="@drawable/delete"
+                android:theme="@style/MyButton"
+                android:id="@+id/deleteReminder"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
