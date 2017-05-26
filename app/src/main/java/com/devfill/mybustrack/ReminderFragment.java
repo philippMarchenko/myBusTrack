@@ -103,8 +103,6 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.IRemin
 
         getContext().registerReceiver(broadcastReceiver,new IntentFilter(updateList));
 
-
-
         return  rootview;
     }
 
