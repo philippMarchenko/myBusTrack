@@ -46,7 +46,10 @@ import android.widget.Toast;
    
     
 	public static final String LOG_TAG = "myLogs";
-    
+
+	public static final String UPDATE_MAP = "update_map";
+
+
 	public interface onSomeEventListener {
 	    public  void choosePointEvent(LatLng latLng);
 	  }
@@ -134,7 +137,6 @@ import android.widget.Toast;
     public void changeMapType (int type) {
     	googleMap.setMapType(type);
         }
-    
     public void createMarcker () {
     	
     	googleMap.clear();
@@ -192,9 +194,6 @@ import android.widget.Toast;
          }
     	 
     }
-    
- 
-    
     @Override
     public void onResume() {
         super.onResume();

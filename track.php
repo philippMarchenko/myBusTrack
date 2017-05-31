@@ -8,6 +8,7 @@ $mysql_database = "efbubzgb_trackingDb"; // имя базы данных efbubzg
 
 
 $event = "asc";
+$trackId = 1;
 
 $linkServ = mysql_connect($mysql_host, $mysql_user, $mysql_password); // коннект к серверу SQL
 if (!$linkServ) {
@@ -46,16 +47,37 @@ if (isset($_GET["trackId"])) {
     $trackId = $_GET['trackId'];
 }
 
-$result = mysql_query("INSERT INTO `tracking`(`latitude`,`longitude`,`date`,`time`) VALUES ('$latitude','$longitude','$date','$current_time')");
+$current_time = round(microtime(1) * 1000);
 
-if (!$result) {
-    die('Неверный запрос: ' . mysql_error());
+if($event == insert){
+	$result = mysql_query("INSERT INTO `tracking`(`latitude`,`longitude`,`date`,`time`,`trackId`) VALUES ('$latitude','$longitude','$date','$current_time','$trackId')");
+		if (!$result) {
+			die('Неверный запрос на добавление: ' . mysql_error());
+		}
+	}
+
+
+	if($event == update){
+	$result = mysql_query("UPDATE `tracking`(`latitude`,`longitude`,`date`,`time`,`trackId`) VALUES ('$latitude','$longitude','$date','$current_time','$trackId')");
+		if (!$result) {
+			die('Неверный запрос на обновление: ' . mysql_error());
+		}
+	}
+	
+	
+if($event == delete){
+
+$result = mysql_query("TRUNCATE TABLE `tracking`");	
+
+		if (!$result) {
+			die('Неверный запрос очищение: ' . mysql_error());
+		}
 }
 
 //if($action == insert && $author != null && $client != null && $text != null){ // если действие INSERT и есть все что нужно
 
 // время = время сервера а не клиента !
-$current_time = round(microtime(1) * 1000);
+
 // пример передачи скрипту данных:
 // chat.php?action=insert&author=author&client=client&text=text
 // вставим строку с переданными параметрами
@@ -63,7 +85,7 @@ $current_time = round(microtime(1) * 1000);
 
 mysql_close();
 
-echo "event $event longitude $longitude latitude $latitude date $date result $result time $current_time trackId $trackId<br/>";
+echo "event $event longitude $longitude latitude $latitude date $date result $result time $current_time trackId $trackId <br/>";
 
 
 echo 'Hello World!';

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -44,6 +45,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
@@ -64,8 +66,20 @@ import android.text.format.Time;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
-import retrofit2.Retrofit;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener,
@@ -102,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     TextView viewMyZoom;
 
 
-    String server_name = "http://www.sitesphilipp.ho.ua";
+    String server_name = "http://www.mkdeveloper.ru";
     String myLatitude;
     String myLongitude;
     String arrayPoints;
@@ -112,13 +126,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     String distance;
     String position = "Горишние Плавни, Полтавська область, Украина";
     String destination = "Саловка, Полтавська область, Украина";
+    String myKey = "AIzaSyANI2wjsY9Vd6Oq3HAG_2gVU6tW8ZkZx9g";
     int checkReminderStatus;
 
     String latitude;
     String longitude;
     String[] msgString = new String[4];
 
-    Long 	 time_ms;
+    Long  time;
 
     final int STATUS_RECIVE = 1;
     int currentFragmentView = 0;
@@ -351,49 +366,32 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
     private void task1() {
 
-
         final Handler uiHandler = new Handler();
         myTimer.schedule(new TimerTask() { // Определяем задачу
             @Override
             public void run() {
                 if(runTimer){
-                    switch(currentFragmentView)	{
-                        case 0:
                             updatelist();
                             goReqest();
-                            //if(sendNoty){
-                            //	sendNoty = false;
-                            //	((CheckBox) frag2.getView().findViewById(R.id.checkReminder))
-                            //.setChecked(false);
-                            //	}
-
-                            Log.d(LOG_TAG, "Первый таб выбран ");
-                            break;
-                        case 1:
-                            goReqest();
-                            Log.d(LOG_TAG, "Второй таб выбран ");
-                            break;
-                        default:
-                            break;
-                    }
                 }
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if(runTimer){
-                            Log.d(LOG_TAG, "Функция  iHandler.post");
-                            switch(currentFragmentView)	{
+                            updatMap();
 
-                                case 0:
-                                    ((TextView) mapViewFragment.getView().findViewById(R.id.durationMapView))
-                                            .setText(durationReal);
-                                    ((TextView) mapViewFragment.getView().findViewById(R.id.distanceMapView))
-                                            .setText(distance);
-                                    mapViewFragment.drawRoute(arrayPoints);
+                           // switch(currentFragmentView)	{
 
-                                    break;
-                                case 1:
-                                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                               // case 0:
+                                  //  ((TextView) mapViewFragment.getView().findViewById(R.id.durationMapView))
+                                   //         .setText(durationReal);
+                                  //  ((TextView) mapViewFragment.getView().findViewById(R.id.distanceMapView))
+                                          //  .setText(distance);
+                                  //  mapViewFragment.drawRoute(arrayPoints);
+
+                                //    break;
+                              //  case 1:
+                                 /*   SQLiteDatabase db = dbHelper.getWritableDatabase();
                                     // делаем запрос всех данных из таблицы mytable, получаем Cursor
                                     Cursor c = db.query("mytable", null, null, null, null, null, null);
 
@@ -447,14 +445,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                                 default:
                                     break;
 
-                            }
+                            }*/
                         }
                     }
                 });
 
             };
 
-        }, 0L, 3L * 1000); // интервал - 60000 миллисекунд, 0 миллисекунд до первого запуска.
+        }, 0L, 5L * 1000); // интервал - 60000 миллисекунд, 0 миллисекунд до первого запуска.
     }
     public void updatelist(){
 
@@ -479,69 +477,70 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         String ansver = null, lnk;
         lnk = server_name + "/track.php?event=select";
 
-        try {
-        /*    RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint("https://maps.googleapis.com").setLogLevel(RestAdapter.LogLevel.FULL)
+     /*   try {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://maps.googleapis.com")
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
-            RouteApi routeService = restAdapter.create(RouteApi.class);
-            RouteResponse routeResponse = routeService.getRoute(position, destination, false, "ru");*/
 
-            Retrofit retrofit = new Retrofit.Builder().baseUrl("https://maps.googleapis.com")
-                    .build();
             RouteApi routeService = retrofit.create(RouteApi.class);
-            RouteResponse routeResponse = routeService.getRoute(position, destination, false, "ru");
-            arrayPoints = routeResponse.getPoints();
-            durationReal = routeResponse.getDurationRout();
-            distance = routeResponse.getDistanceRout();
 
-            // подключаемся к БД
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            Log.d(LOG_TAG_DB, "--- Update in mytable: ---");
-            // подготовим данные для вставки в виде пар: наименование столбца - значение
-            cv.put("distance", distance);
-            cv.put("durationReal", durationReal);
-            int updCount = db.update("mytable", cv, "routName = ?",
-                    new String[] { "Крем.-Саловка" });
-            Log.d(LOG_TAG_DB, "updated rows count = " + updCount);
-            Log.d(LOG_TAG_DB, "--- Rows in mytable: ---");
-            // делаем запрос всех данных из таблицы mytable, получаем Cursor
-            Cursor c = db.query("mytable", null, null, null, null, null, null);
 
-            // ставим позицию курсора на первую строку выборки
-            // если в выборке нет строк, вернется false
-            if (c.moveToFirst()) {
+            routeService.getRoute(position, destination,myKey,false, "ru").enqueue(new Callback<RouteResponse>() {
+                @Override
+                public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
 
-                // определяем номера столбцов по имени в выборке
-                int routNameColIndex = c.getColumnIndex("routName");
-                int durationColIndex = c.getColumnIndex("duration");
-                int durationRealColIndex = c.getColumnIndex("durationReal");
-                int distanceColIndex = c.getColumnIndex("distance");
+                   // Log.i(LOG_TAG,"onResponse. Приняли ответ от google" +  response.toString());
 
-                do {
-                    // получаем значения по номерам столбцов и пишем все в лог
-                    Log.d(LOG_TAG_DB,
-                            "routName = " + c.getString(routNameColIndex) +
-                                    ", duration = " + c.getString(durationColIndex) +
-                                    ", durationReal = " + c.getString(durationRealColIndex) +
-                                    ", distance = " + c.getString(distanceColIndex));
-                    // переход на следующую строку
-                    // а если следующей нет (текущая - последняя), то false - выходим из цикла
-                } while (c.moveToNext());
-            } else
-                Log.d(LOG_TAG_DB, "0 rows");
-            c.close();
+                    // arrayPoints = response.body().getPoints();
+                     durationReal = response.body().getDurationRout();
+                     distance = response.body().getDistanceRout();
 
-            // закрываем подключение к БД
-            dbHelper.close();
+                    Log.i(LOG_TAG," durationReal " + durationReal + " distance " + distance);
 
+                }
+                @Override
+                public void onFailure(Call<RouteResponse> call, Throwable t) {
+                    Log.i(LOG_TAG,"onFailure. Ошибка REST запроса getRoute " + t.getMessage());
+                }
+            });
         }
         catch(Exception e){
 
-            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google " + e.getMessage());
+            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google getRoute " + e.getMessage());
+        }*/
+
+
+        try {
+            Retrofit retrofit = new Retrofit.Builder()
+                   // .client(getUnsafeOkHttpClient())
+                    .baseUrl("http://mkdeveloper.ru")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            TrackApi trackApi = retrofit.create(TrackApi.class);
+
+
+            trackApi.getTrackInfo("select").enqueue(new Callback<TrackInfo>() {
+                @Override
+                public void onResponse(Call<TrackInfo> call, Response<TrackInfo> response) {
+                    Log.i(LOG_TAG,"onResponse getTrackInfo " + response.toString());
+
+                }
+
+                @Override
+                public void onFailure(Call<TrackInfo> call, Throwable t) {
+                    Log.i(LOG_TAG,"onFailure. Ошибка REST запроса getTrackInfo " + t.getMessage());
+                }
+            });
+        }
+        catch(Exception e){
+
+            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google getRoute" + e.getMessage());
         }
 
 
-        // создаем соединение ---------------------------------->
+        /*// создаем соединение ---------------------------------->
         try {
             Log.i(LOG_TAG,
                     "+ FoneService --------------- ОТКРОЕМ СОЕДИНЕНИЕ");
@@ -610,9 +609,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                             "=================>>> "
                                     + jo.getString("latitude")
                                     + " | " + jo.getString("longitude")
-                                    + " | " + jo.getString("date")
-                                    + " | " + jo.getString("time")
-                                    + " | " + jo.getLong("time_ms"));
+                                    + " | " + jo.getString("trackid")
+                                    + " | " + jo.getString("time"));
 
 
                     latitude = jo.getString("latitude");
@@ -622,15 +620,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
                     msgString[0] = jo.getString("latitude");
                     msgString[1] = jo.getString("longitude");
-                    msgString[2] = jo.getString("date");
-                    msgString[3] = jo.getString("time");
+                    msgString[2] = jo.getString("trackid");
+                //    msgString[3] = jo.getString("time");
 
                     Log.i(LOG_TAG,"Широта + Долгота = " + latitude + " " + longitude);
 
-                    if(time_ms != jo.getLong("time_ms")){
+                    if(time != jo.getLong("time")){
                         //h.sendEmptyMessage(STATUS_RECIVE);
                     }
-                    time_ms	= jo.getLong("time_ms");
+                    time = jo.getLong("time");
                     i++;
 
                 }
@@ -644,6 +642,47 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             // если ответ сервера пустой
             Log.i(LOG_TAG,
                     "+ FoneService ---------- ответ не содержит JSON!");
+        }*/
+    }
+    private static OkHttpClient getUnsafeOkHttpClient() {
+        try {
+            // Create a trust manager that does not validate certificate chains
+            final TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            // Create an ssl socket factory with our all-trusting manager
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.sslSocketFactory(sslSocketFactory);
+            builder.hostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            });
+
+            OkHttpClient okHttpClient = builder.build();
+            return okHttpClient;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     private LocationListener locationListener = new LocationListener() {
@@ -710,6 +749,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         }
 
         ft.commit();
+    }
+    public void updatMap (){
+        final Intent intent = new Intent(MapViewFragment.UPDATE_MAP);
+        sendBroadcast(intent);
     }
     @Override
     public void onTabUnselected(Tab tab, FragmentTransaction ft) {

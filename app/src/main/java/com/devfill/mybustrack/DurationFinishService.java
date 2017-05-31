@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 public class DurationFinishService extends Service implements OnLoadCompleteListener{
 
-	final String LOG_TAG = "myLogs";
+	final String LOG_TAG = "LogsDurationService";
 	final int MAX_STREAMS = 5;
 	  
 	SoundPool sp;
@@ -129,8 +129,8 @@ public class DurationFinishService extends Service implements OnLoadCompleteList
 	    	    	catch(Exception e){
 	    				Log.i(LOG_TAG,"������ �������������� ������ � int " + e.getMessage());
 	    					}
-	    	    	Log.d(LOG_TAG, "durReal = " + durReal + " dur = " + dur);
-	    	    	Log.d(LOG_TAG, "durInt = " + durInt + " durRealInt = " + durRealInt);
+	    	    	//Log.d(LOG_TAG, "durReal = " + durReal + " dur = " + dur);
+	    	    //	Log.d(LOG_TAG, "durInt = " + durInt + " durRealInt = " + durRealInt);
 	     		
 	    	    	if(durInt > durRealInt && MainActivity.sendNoty){
 	     				Log.i(LOG_TAG,"����� �����, ������������� ");
