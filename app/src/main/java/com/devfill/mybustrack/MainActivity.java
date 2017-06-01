@@ -1,26 +1,13 @@
 package com.devfill.mybustrack;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
-import android.app.Activity;
-import android.app.Service;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import android.app.ActionBar;
-import android.app.ActionBar.OnMenuVisibilityListener;
 import android.app.ActivityManager;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
@@ -31,7 +18,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -39,9 +25,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
@@ -65,6 +48,8 @@ import android.text.format.Time;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -474,8 +459,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
     private void goReqest() {
 
-        String ansver = null, lnk;
-        lnk = server_name + "/track.php?event=select";
 
      /*   try {
             Retrofit retrofit = new Retrofit.Builder()
@@ -512,19 +495,28 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
 
         try {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+
             Retrofit retrofit = new Retrofit.Builder()
                    // .client(getUnsafeOkHttpClient())
                     .baseUrl("http://mkdeveloper.ru")
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
 
             TrackApi trackApi = retrofit.create(TrackApi.class);
 
-
-            trackApi.getTrackInfo("select").enqueue(new Callback<TrackInfo>() {
+            trackApi.getTrackInfo("select","1").enqueue(new Callback<TrackInfo>() {
                 @Override
                 public void onResponse(Call<TrackInfo> call, Response<TrackInfo> response) {
-                    Log.i(LOG_TAG,"onResponse getTrackInfo " + response.toString());
+                    Log.i(LOG_TAG,"onResponse getTrackInfo "  + call.toString() + "\n" );
+
+                    Log.i(LOG_TAG,"onResponse getTrackInfo "  + response.toString() + "\n" );
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getTrackId " + response.body().getTrackId() + "\n");
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getTime " + response.body().getTime()  + "\n");
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getLatitude " + response.body().getLatitude() + "\n");
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getLongitude " + response.body().getLongitude() + "\n");
 
                 }
 

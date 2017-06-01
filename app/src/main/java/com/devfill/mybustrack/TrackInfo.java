@@ -4,13 +4,13 @@ import java.util.List;
 
 public class TrackInfo  {
 
-    public String trackId;
+    public String trackid;
     public String latitude;
     public String longitude;
     public String time;
 
     public String getTrackId() {
-        return trackId;
+        return trackid;
     }
 
     public String getLatitude() {

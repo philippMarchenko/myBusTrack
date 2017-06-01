@@ -8,5 +8,6 @@ public interface TrackApi {
 
     @GET("/track.php")
     Call<TrackInfo> getTrackInfo(
-            @Query(value = "event") String event);
+            @Query(value = "event") String event,
+            @Query(value = "trackId") String trackId);
 }
