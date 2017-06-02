@@ -104,18 +104,18 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     String server_name = "http://www.mkdeveloper.ru";
     String myLatitude;
     String myLongitude;
-    String arrayPoints;
+    static String arrayPoints;
     String routName;
     static String durationReal;
     static String duration;
-    String distance;
+    static String distance;
     String position = "Горишние Плавни, Полтавська область, Украина";
     String destination = "Саловка, Полтавська область, Украина";
     String myKey = "AIzaSyANI2wjsY9Vd6Oq3HAG_2gVU6tW8ZkZx9g";
     int checkReminderStatus;
 
-    String latitude;
-    String longitude;
+    String latitudeBus;
+    String longitudeBus;
     String[] msgString = new String[4];
 
     Long  time;
@@ -357,7 +357,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             public void run() {
                 if(runTimer){
                             updatelist();
-                            goReqest();
+                          //  goReqest();
+                            getCoordinatesbus();
+                            getRouteData();
                 }
                 uiHandler.post(new Runnable() {
                     @Override
@@ -441,11 +443,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
     public void updatelist(){
 
-        final Intent intent = new Intent(ReminderFragment.updateList);
+        final Intent intent = new Intent(ReminderFragment.UPDATE_LIST);
 
-        intent.putExtra("durationReal"," 15 мин");
-        intent.putExtra("distance"," 123 км");    //обновили граффик,
-        intent.putExtra("routName", mEntries[1]);    //обновили граффик,
+        intent.putExtra("durationReal",durationReal);
+        intent.putExtra("distance",distance);    //обновили граффик,
+        intent.putExtra("routName", mEntries[0]);    //обновили граффик,
         sendBroadcast(intent);
     }
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -460,76 +462,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     private void goReqest() {
 
 
-     /*   try {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://maps.googleapis.com")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            RouteApi routeService = retrofit.create(RouteApi.class);
 
 
-            routeService.getRoute(position, destination,myKey,false, "ru").enqueue(new Callback<RouteResponse>() {
-                @Override
-                public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
-
-                   // Log.i(LOG_TAG,"onResponse. Приняли ответ от google" +  response.toString());
-
-                    // arrayPoints = response.body().getPoints();
-                     durationReal = response.body().getDurationRout();
-                     distance = response.body().getDistanceRout();
-
-                    Log.i(LOG_TAG," durationReal " + durationReal + " distance " + distance);
-
-                }
-                @Override
-                public void onFailure(Call<RouteResponse> call, Throwable t) {
-                    Log.i(LOG_TAG,"onFailure. Ошибка REST запроса getRoute " + t.getMessage());
-                }
-            });
-        }
-        catch(Exception e){
-
-            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google getRoute " + e.getMessage());
-        }*/
 
 
-        try {
-            Gson gson = new GsonBuilder()
-                    .setLenient()
-                    .create();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                   // .client(getUnsafeOkHttpClient())
-                    .baseUrl("http://mkdeveloper.ru")
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-
-            TrackApi trackApi = retrofit.create(TrackApi.class);
-
-            trackApi.getTrackInfo("select","1").enqueue(new Callback<TrackInfo>() {
-                @Override
-                public void onResponse(Call<TrackInfo> call, Response<TrackInfo> response) {
-                    Log.i(LOG_TAG,"onResponse getTrackInfo "  + call.toString() + "\n" );
-
-                    Log.i(LOG_TAG,"onResponse getTrackInfo "  + response.toString() + "\n" );
-                    Log.i(LOG_TAG,"onResponse getTrackInfo getTrackId " + response.body().getTrackId() + "\n");
-                    Log.i(LOG_TAG,"onResponse getTrackInfo getTime " + response.body().getTime()  + "\n");
-                    Log.i(LOG_TAG,"onResponse getTrackInfo getLatitude " + response.body().getLatitude() + "\n");
-                    Log.i(LOG_TAG,"onResponse getTrackInfo getLongitude " + response.body().getLongitude() + "\n");
-
-                }
-
-                @Override
-                public void onFailure(Call<TrackInfo> call, Throwable t) {
-                    Log.i(LOG_TAG,"onFailure. Ошибка REST запроса getTrackInfo " + t.getMessage());
-                }
-            });
-        }
-        catch(Exception e){
-
-            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google getRoute" + e.getMessage());
-        }
 
 
         /*// создаем соединение ---------------------------------->
@@ -636,45 +572,85 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     "+ FoneService ---------- ответ не содержит JSON!");
         }*/
     }
-    private static OkHttpClient getUnsafeOkHttpClient() {
-        try {
-            // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                        }
+    public void getRouteData(){
 
-                        @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                        }
+            try {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://maps.googleapis.com")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[]{};
-                        }
-                    }
-            };
+            RouteApi routeService = retrofit.create(RouteApi.class);
 
-            // Install the all-trusting trust manager
-            final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            // Create an ssl socket factory with our all-trusting manager
-            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.sslSocketFactory(sslSocketFactory);
-            builder.hostnameVerifier(new HostnameVerifier() {
+            routeService.getRoute(position, destination,myKey,false, "ru").enqueue(new Callback<RouteResponse>() {
                 @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
+                public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
+
+                   // Log.i(LOG_TAG,"onResponse. Приняли ответ от google" +  response.toString());
+
+                     arrayPoints = response.body().getPoints();
+                     durationReal = response.body().getDurationRout();
+                     distance = response.body().getDistanceRout();
+
+                    Log.i(LOG_TAG," durationReal " + durationReal + " distance " + distance);
+
+                }
+                @Override
+                public void onFailure(Call<RouteResponse> call, Throwable t) {
+                    Log.i(LOG_TAG,"onFailure. Ошибка REST запроса getRoute " + t.getMessage());
                 }
             });
+        }
+        catch(Exception e){
 
-            OkHttpClient okHttpClient = builder.build();
-            return okHttpClient;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google getRoute " + e.getMessage());
+        }
+    }
+    public void getCoordinatesbus(){
+
+        try {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    // .client(getUnsafeOkHttpClient())
+                    .baseUrl("http://mkdeveloper.ru")
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+            TrackApi trackApi = retrofit.create(TrackApi.class);
+
+            trackApi.getTrackInfo("select","1").enqueue(new Callback<TrackInfo>() {
+                @Override
+                public void onResponse(Call<TrackInfo> call, Response<TrackInfo> response) {
+                    Log.i(LOG_TAG,"onResponse getTrackInfo "  + call.toString() + "\n" );
+
+                    Log.i(LOG_TAG,"onResponse getTrackInfo "  + response.toString() + "\n" );
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getTrackId " + response.body().getTrackId() + "\n");
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getTime " + response.body().getTime()  + "\n");
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getLatitude " + response.body().getLatitude() + "\n");
+                    Log.i(LOG_TAG,"onResponse getTrackInfo getLongitude " + response.body().getLongitude() + "\n");
+
+
+                    longitudeBus = response.body().getLongitude();
+                    latitudeBus = response.body().getLatitude();
+
+
+
+                    position = latitudeBus + "," + longitudeBus;
+                }
+
+                @Override
+                public void onFailure(Call<TrackInfo> call, Throwable t) {
+                    Log.i(LOG_TAG,"onFailure. Ошибка REST запроса getTrackInfo " + t.getMessage());
+                }
+            });
+        }
+        catch(Exception e){
+
+            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google getRoute" + e.getMessage());
         }
     }
     private LocationListener locationListener = new LocationListener() {

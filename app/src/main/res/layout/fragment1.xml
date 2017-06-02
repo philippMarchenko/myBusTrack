@@ -38,22 +38,4 @@
         android:layout_below="@+id/distanceMap"
         android:text="@string/durationMap" />
 
-    <TextView
-        android:id="@+id/distanceMapView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="18dp"
-        android:layout_toRightOf="@+id/durationMap"
-        android:text="@string/distanceMapView" />
-
-    <TextView
-        android:id="@+id/durationMapView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/durationMap"
-        android:layout_alignBottom="@+id/durationMap"
-        android:layout_alignLeft="@+id/distanceMapView"
-        android:text="@string/durationMapView" />
-
 </RelativeLayout>

@@ -39,7 +39,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.IRemin
     IReminderFragmentlistener iReminderFragmentlistener;
 
     BroadcastReceiver broadcastReceiver;
-    public static String updateList = "UPDATE_LIST";
+    public static String UPDATE_LIST = "updateList";
 
     public interface IReminderFragmentlistener{
         public void onClickFab();
@@ -91,8 +91,8 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.IRemin
 
               for(int i = 0; i < reminderList.size(); i ++){
 
-                  if(reminderList.get(i).getRoute().equals(routName)){
-                      reminderList.get(i).setDistance(distance);
+                  if(reminderList.get(i).getRoute().equals(routName)){  //если имя маршрута , который монитори совпадет с именем маршрута в списке напоминаний
+                      reminderList.get(i).setDistance(distance);           //покажем дистанци. и время
                       reminderList.get(i).setDurationReal(durationReal);
                       reminderAdapter.notifyDataSetChanged();
                   }
@@ -101,7 +101,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.IRemin
             }
         };
 
-        getContext().registerReceiver(broadcastReceiver,new IntentFilter(updateList));
+        getContext().registerReceiver(broadcastReceiver,new IntentFilter(UPDATE_LIST));
 
         return  rootview;
     }

@@ -2,7 +2,6 @@ package com.devfill.mybustrack;
 
 public class Reminder {
 
-
         private String route;
 		private String distance;
 		private String duration;

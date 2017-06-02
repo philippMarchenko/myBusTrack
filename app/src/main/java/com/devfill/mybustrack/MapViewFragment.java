@@ -20,6 +20,10 @@ import com.google.maps.android.PolyUtil;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,7 +48,8 @@ import android.widget.Toast;
     TextView distanceMap;
     Button butChoosePoint;
    
-    
+    BroadcastReceiver broadcastReceiverMap;
+
 	public static final String LOG_TAG = "myLogs";
 
 	public static final String UPDATE_MAP = "update_map";
@@ -73,9 +78,9 @@ import android.widget.Toast;
 
         mMapView.onResume(); // needed to get the map to display immediately
 
-        durationMapView = (TextView) rootView.findViewById(R.id.durationMapView);
+       // durationMapView = (TextView) rootView.findViewById(R.id.durationMapView);
         durationMap = (TextView) rootView.findViewById(R.id.durationMap);
-        distanceMapView = (TextView) rootView.findViewById(R.id.distanceMapView);
+      //  distanceMapView = (TextView) rootView.findViewById(R.id.distanceMapView);
         distanceMap = (TextView) rootView.findViewById(R.id.distanceMap);
         butChoosePoint = (Button) rootView.findViewById(R.id.butChoosePoint);
         
@@ -130,7 +135,22 @@ import android.widget.Toast;
     	        	googleMap.clear();
     	        }
     	      });
-    	
+
+		broadcastReceiverMap = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+
+				drawRoute(MainActivity.arrayPoints);
+
+				distanceMap.setText("Дистанция " + MainActivity.distance);
+				durationMap.setText("До прибытия " + MainActivity.durationReal);
+
+			}
+		};
+
+
+		getContext().registerReceiver(broadcastReceiverMap,new IntentFilter(UPDATE_MAP));
+
         return rootView;
     }
 
@@ -143,7 +163,7 @@ import android.widget.Toast;
     	
     	markerOption.position(new LatLng(
 		    		48.99,33.67))
-			.title("��� ������������").draggable(true);
+			.title("Мое расположение").draggable(true);
     	marker = googleMap.addMarker(markerOption);
     	
     	durationMapView.setVisibility(TextView.INVISIBLE);
@@ -155,8 +175,8 @@ import android.widget.Toast;
     	
     	
     	    	
-    	Toast.makeText(getActivity(), "�������� ����� �� ����� � ������� ������", Toast.LENGTH_LONG).show();
-    	Log.i(LOG_TAG, "����� �������� �������");
+    	Toast.makeText(getActivity(), "Выберите точку на карте и нажмите кнопку", Toast.LENGTH_LONG).show();
+    	Log.i(LOG_TAG, "Метод создания маркера");
     }
     public void drawRoute (String arrayPoints) {	//������� ��������� ��������
     	 
@@ -171,12 +191,12 @@ import android.widget.Toast;
  	        if (i == 0) {
  	        	googleMap.addMarker(markerOption
  	        			.position(mPoints.get(i))
- 	        			.title("��� ���������"));	//������ ������ �� ���������);
+ 	        			.title("Моя маршрутка"));	//������ ������ �� ���������);
  	       	    } 
  	        else if (i == mPoints.size() - 1) {
  	        	googleMap.addMarker(markerOption
  	          			.position(mPoints.get(i))
- 	          			.title("��� ������������"));	//������ ������ �� ����� ��������);
+ 	          			.title("Мое расположение"));	//������ ������ �� ����� ��������);
  	        }
  	        line.add(mPoints.get(i));	//��������� � ��������� ��������� ����������
  	        latLngBuilder.include(mPoints.get(i));
@@ -187,10 +207,10 @@ import android.widget.Toast;
  	   
  	    CameraUpdate track = CameraUpdateFactory.newLatLngBounds(latLngBounds, size, size, 100);
  	    googleMap.animateCamera(track);		//�������������� �����������
-    	        
-    	        Log.i(LOG_TAG, "��������� �������� ���������");
+
+			 Log.i(LOG_TAG, "Отрисовка маршрута выполнена");
          } catch (Exception e) {
-        	 Log.i(LOG_TAG, "��������� �������� �� �������" + e.getMessage()); 
+			 Log.i(LOG_TAG, "Отрисовка маршрута не удалась" + e.getMessage());
          }
     	 
     }
