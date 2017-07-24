@@ -67,12 +67,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity implements ActionBar.TabListener,
-        MapViewFragment.onSomeEventListener,
-        Fragment2.onFragment2Listener,
-        AddReminderFragment.IAddReminderFragment {
+public class MainActivity extends AppCompatActivity implements MapViewFragment.MapViewFragmentListener {
 
-    public static String[] mEntries = new String[]{"Саловка - Кременчук","Мотрине - Бригадирівка","Карпівка - Махнівка","Кобилячок - Пришиб", "Петрашівка - Київ"};;
+    public static String[] mEntries = new String[]{"Комсомольск - Кременчуг","Полтава - Харьков","Киев - Одесса", "Житомир - Львов","Саловка - Кременчук"};;
 
 
     public static final String LOG_TAG = "myLogs";
@@ -129,15 +126,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     static boolean sendNoty = false;
     static boolean timerService = false;
     long millis = 0;
+
     LocationManager locationManager;
 
     HttpURLConnection conn;
     FragmentTransaction ft;
-    MapViewFragment mapViewFragment = new MapViewFragment();
+    MapViewFragment mapViewFragment;
     DBHelper dbHelper;
-    //  Time time = new Time(Time.getCurrentTimezone());
-    // Date date = new Date();
-    Fragment2 frag2;
+
     AddReminderFragment frag3;
     Long last_time; // время последней записи в БД, отсекаем по нему что нам/ тянуть с сервера, а что уже есть
 
@@ -157,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //setTheme(R.style.AppThemeNonDrawer);
 
+        mapViewFragment = new MapViewFragment();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -188,43 +185,16 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                 1000 * 10, 0,locationListener);
 
-        frag2 = new Fragment2();
-        frag3 = new AddReminderFragment(this);
-
-      //  ft = getFragmentManager().beginTransaction();
-       // ft.add(R.id.container, mapViewFragment);
-       // ft.commit();
-
-
-
-      /*  ActionBar bar = getActionBar();
-        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        Tab tab = bar.newTab();
-        tab.setText("Карта");
-        tab.setTabListener(this);
-        bar.addTab(tab);
-
-        tab = bar.newTab();
-        tab.setText("Напоминания");
-        tab.setTabListener(this);
-        bar.addTab(tab);
-*/
-
         // создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
 
-
-
-
-        if(!isMyServiceRunning(DurationFinishService.class))
-        {
+        if(!isMyServiceRunning(DurationFinishService.class)) {
             Log.d(LOG_TAG, "DurationFinishService is not runing");
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             // делаем запрос всех данных из таблицы mytable, получаем Cursor
             Cursor c = db.query("mytable", null, null, null, null, null, null);
 
-            if (c.moveToFirst()){
+            if (c.moveToFirst()) {
                 tableIsEmpty = false;
                 statDurationFinishService();
 
@@ -232,12 +202,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         }
 
-
-
-
         task1();
     }
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(mapViewFragment, "Карта");
@@ -259,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         return true;
     }
-
     void enableGPS (){
         if ( Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission( getBaseContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
@@ -326,9 +291,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         runTimer = true;
         enableGPS();
 
-
         Log.i(LOG_TAG, "Возобновление работы приложения onResume");
-
 
     }
     protected void onDestroy(){
@@ -367,72 +330,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                         if(runTimer){
                             updatMap();
 
-                           // switch(currentFragmentView)	{
-
-                               // case 0:
-                                  //  ((TextView) mapViewFragment.getView().findViewById(R.id.durationMapView))
-                                   //         .setText(durationReal);
-                                  //  ((TextView) mapViewFragment.getView().findViewById(R.id.distanceMapView))
-                                          //  .setText(distance);
-                                  //  mapViewFragment.drawRoute(arrayPoints);
-
-                                //    break;
-                              //  case 1:
-                                 /*   SQLiteDatabase db = dbHelper.getWritableDatabase();
-                                    // делаем запрос всех данных из таблицы mytable, получаем Cursor
-                                    Cursor c = db.query("mytable", null, null, null, null, null, null);
-
-                                    if (c.moveToFirst()){
-                                        tableIsEmpty = false;
-                                        // определяем номера столбцов по имени в выборке
-                                        int routNameColIndex = c.getColumnIndex("routName");
-                                        int durationColIndex = c.getColumnIndex("duration");
-                                        int durationRealColIndex = c.getColumnIndex("durationReal");
-                                        int distanceColIndex = c.getColumnIndex("distance");
-                                        int checkReminderStatusColIndex = c.getColumnIndex("checkReminderStatus");
-
-                                        do {
-                                            // получаем значения по номерам столбцов и пишем все в лог
-                                            Log.d(LOG_TAG_DB,
-                                                    "routName = " + c.getString(routNameColIndex) +
-                                                            ", duration = " + c.getString(durationColIndex) +
-                                                            ", durationReal = " + c.getString(durationRealColIndex) +
-                                                            ", checkReminderStatus = " + c.getInt(checkReminderStatusColIndex) +
-                                                            ", distance = " + c.getString(distanceColIndex));
-
-                                            routName = c.getString(routNameColIndex);
-                                            distance = c.getString(distanceColIndex);
-                                            duration =  c.getString(durationColIndex);
-                                            durationReal = c.getString(durationRealColIndex);
-                                            checkReminderStatus = c.getInt(checkReminderStatusColIndex);
-
-                                            frag2.checkReminderChange(checkReminderStatus);
-
-
-                                            frag2.setValues(routName,distance,duration,durationReal);
-
-                                            // переход на следующую строку
-                                            // а если следующей нет (текущая - последняя), то false - выходим из цикла
-                                        } while (c.moveToNext());
-
-                                        frag2.setVisibleValues();
-                                        if(!isMyServiceRunning(DurationFinishService.class))
-                                        {
-                                            statDurationFinishService();
-                                        }
-                                    }
-                                    else{
-                                        tableIsEmpty = true;
-                                        frag2.setInvisibleValues();
-                                        stopDurationFinishService();
-                                    }
-
-
-                                    break;
-                                default:
-                                    break;
-
-                            }*/
                         }
                     }
                 });
@@ -447,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         intent.putExtra("durationReal",durationReal);
         intent.putExtra("distance",distance);    //обновили граффик,
-        intent.putExtra("routName", mEntries[0]);    //обновили граффик,
+        intent.putExtra("routName", mEntries[4]);    //обновили граффик,
         sendBroadcast(intent);
     }
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -458,119 +355,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             }
         }
         return false;
-    }
-    private void goReqest() {
-
-
-
-
-
-
-
-
-        /*// создаем соединение ---------------------------------->
-        try {
-            Log.i(LOG_TAG,
-                    "+ FoneService --------------- ОТКРОЕМ СОЕДИНЕНИЕ");
-
-            conn = (HttpURLConnection) new URL(lnk)
-                    .openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-            conn.setDoInput(true);
-            conn.connect();
-
-        } catch (Exception e) {
-            Log.i(LOG_TAG, "+ FoneService ошибка: " + e.getMessage());
-        }
-        // получаем ответ ---------------------------------->
-        try {
-            InputStream is = conn.getInputStream();
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(is, "UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            String bfr_st = null;
-            while ((bfr_st = br.readLine()) != null) {
-                sb.append(bfr_st);
-            }
-
-            Log.i(LOG_TAG, "+ FoneService - полный ответ сервера:\n"
-                    + sb.toString());
-            // сформируем ответ сервера в string
-            // обрежем в полученном ответе все, что находится за "]"
-            // это необходимо, т.к. json ответ приходит с мусором
-            // и если этот мусор не убрать - будет невалидным
-            ansver = sb.toString();
-            ansver = ansver.substring(0, ansver.indexOf("]") + 1);
-
-            is.close(); // закроем поток
-            br.close(); // закроем буфер
-
-        } catch (Exception e) {
-            Log.i(LOG_TAG, "+ FoneService ошибка: " + e.getMessage());
-        } finally {
-            conn.disconnect();
-            Log.i(LOG_TAG,"+ FoneService --------------- ЗАКРОЕМ СОЕДИНЕНИЕ");
-        }
-
-        // запишем ответ в БД ---------------------------------->
-        if (ansver != null && !ansver.trim().equals("")) {
-
-            Log.i(LOG_TAG,
-                    "+ FoneService ---------- ответ содержит JSON:");
-
-            try {
-                // ответ превратим в JSON массив
-                JSONArray ja = new JSONArray(ansver);
-                JSONObject jo;
-
-                Integer i = 0;
-
-                while (i < ja.length()) {
-
-                    // разберем JSON массив построчно
-                    jo = ja.getJSONObject(i);
-
-                    Log.i(LOG_TAG,
-                            "=================>>> "
-                                    + jo.getString("latitude")
-                                    + " | " + jo.getString("longitude")
-                                    + " | " + jo.getString("trackid")
-                                    + " | " + jo.getString("time"));
-
-
-                    latitude = jo.getString("latitude");
-                    longitude = jo.getString("longitude");
-
-                    //position = latitude + "," + longitude;
-
-                    msgString[0] = jo.getString("latitude");
-                    msgString[1] = jo.getString("longitude");
-                    msgString[2] = jo.getString("trackid");
-                //    msgString[3] = jo.getString("time");
-
-                    Log.i(LOG_TAG,"Широта + Долгота = " + latitude + " " + longitude);
-
-                    if(time != jo.getLong("time")){
-                        //h.sendEmptyMessage(STATUS_RECIVE);
-                    }
-                    time = jo.getLong("time");
-                    i++;
-
-                }
-            } catch (Exception e) {
-                // если ответ сервера не содержит валидный JSON
-                Log.i(LOG_TAG,
-                        "+ FoneService ---------- ошибка ответа сервера:\n"
-                                + e.getMessage());
-            }
-        } else {
-            // если ответ сервера пустой
-            Log.i(LOG_TAG,
-                    "+ FoneService ---------- ответ не содержит JSON!");
-        }*/
     }
     public void getRouteData(){
 
@@ -583,17 +367,19 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             RouteApi routeService = retrofit.create(RouteApi.class);
 
 
+           Log.i(LOG_TAG,"getRoute" + " position " + position + " destination " + destination);
+
             routeService.getRoute(position, destination,myKey,false, "ru").enqueue(new Callback<RouteResponse>() {
                 @Override
                 public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
 
-                   // Log.i(LOG_TAG,"onResponse. Приняли ответ от google" +  response.toString());
+                    Log.i(LOG_TAG,"onResponse. Приняли ответ от google" + response.toString());
 
                      arrayPoints = response.body().getPoints();
                      durationReal = response.body().getDurationRout();
                      distance = response.body().getDistanceRout();
 
-                    Log.i(LOG_TAG," durationReal " + durationReal + " distance " + distance);
+                    Log.i(LOG_TAG,"durationReal " + durationReal + " distance " + distance);
 
                 }
                 @Override
@@ -636,10 +422,24 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
                     longitudeBus = response.body().getLongitude();
                     latitudeBus = response.body().getLatitude();
+                    Log.i(LOG_TAG,"substring  latitudeBus " +  latitudeBus.substring(0,2) + "\n");
 
 
+                    String latitudeBusv = latitudeBus.substring(2,4) + latitudeBus.substring(4,10);
+                    latitudeBusv = latitudeBusv.replaceAll("[^0-9]+", "");
+                    int latitudeBusvInt = Integer.parseInt(latitudeBusv);
+                    latitudeBusvInt = latitudeBusvInt/60;
 
-                    position = latitudeBus + "," + longitudeBus;
+                    String longitudeBusv = longitudeBus.substring(3,5) + longitudeBus.substring(5,11);
+                    longitudeBusv = longitudeBusv.replaceAll("[^0-9]+", "");
+                    int longitudeBusvInt = Integer.parseInt(longitudeBusv);
+                    longitudeBusvInt = longitudeBusvInt/60;
+
+
+                 //   position = latitudeBus.substring(0,2) + " " + latitudeBus.substring(2,4) + latitudeBus.substring(4,10) + ","
+                        //    + longitudeBus.substring(0,3) + " " + longitudeBus.substring(3,5) + longitudeBus.substring(5,11);
+
+                    position = latitudeBus.substring(0,2) + "." + latitudeBusvInt + "," + longitudeBus.substring(0,3) + "." + longitudeBusvInt;
                 }
 
                 @Override
@@ -688,44 +488,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         }
     };
-    @Override
-    public void onTabReselected(Tab tab, FragmentTransaction ft) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void onTabSelected(Tab tab, FragmentTransaction ft) {
-
-        ft = getFragmentManager().beginTransaction();
-
-        switch(tab.getPosition()){
-
-            case 0:
-                //ft.remove(frag2);
-               // ft.replace(R.id.container, mapViewFragment);
-                currentFragmentView = 0;
-                break;
-            case 1:
-                currentFragmentView = 1;
-                //ft.remove(mapViewFragment);
-               // ft.replace(R.id.container, frag2);
-
-                break;
-            default:
-                break;
-
-        }
-
-        ft.commit();
-    }
     public void updatMap (){
         final Intent intent = new Intent(MapViewFragment.UPDATE_MAP);
         sendBroadcast(intent);
-    }
-    @Override
-    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-        // TODO Auto-generated method stub
-
     }
     @Override
     public void choosePointEvent(LatLng latLng) {
@@ -733,137 +498,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         if(chooseTypePoint == TYPE_POINT_ON_MAP){
             destination = latLng.latitude + "," + latLng.longitude;
             Toast.makeText(this, "Выбран режим точки на карте", Toast.LENGTH_LONG).show();
+            getRouteData();
             runTimer = true;
             satusSetting = true;
             Log.i(LOG_TAG, "Сработал интерфейс, координаты " + destination);
         }
         return;
-    }
-    @Override
-    public void onClickAddEvent() {
-
-        //Reminders.initReminder("Мой маршрут", "0 км", "0 мин", "0 мин");
-
-        currentFragmentView = 3;
-        ft = getFragmentManager().beginTransaction();
-       // ft.replace(R.id.container, frag3);
-        ft.commit();
-
-    }
-    @Override
-    public void onClickRefEvent() {
-        currentFragmentView = 3;
-        ft = getFragmentManager().beginTransaction();
-       // ft.replace(R.id.container, frag3);
-        ft.commit();
-
-    }
-    @Override
-    public void onClickDelEvent() {
-
-     //  Reminders.deInitReminder();
-
-        // подключаемся к БД
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Log.d(LOG_TAG_DB, "--- Clear mytable: ---");
-        // удаляем все записи
-        int clearCount = db.delete("mytable", null, null);
-
-        // закрываем подключение к БД
-        dbHelper.close();
-
-        frag2.setInvisibleValues();
-    }
-   /* @Override
-    public void onClickSaveEvent(String strSpin,String strEt) {
-
-        currentFragmentView = 1;
-        ft = getFragmentManager().beginTransaction();
-        //ft.replace(R.id.container, frag2);
-        ft.commit();
-
-        //Reminders.routeId[Reminders.count] = strSpin;
-        //Reminders.duration[Reminders.count] = strEt;
-
-
-        // подключаемся к БД
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        // делаем запрос всех данных из таблицы mytable, получаем Cursor
-        Cursor c = db.query("mytable", null, null, null, null, null, null);
-
-        Log.d(LOG_TAG_DB, "--- Insert in mytable: ---");
-        // подготовим данные для вставки в виде пар: наименование столбца - значение
-        cv.put("routName", strSpin);
-        cv.put("duration", strEt);
-
-
-        if (c.moveToFirst()){	//если таблица не пуста то обновляем знаения
-            int updCount = db.update("mytable", cv, "routName = ?",	//по наименованию маршрута
-                    new String[] { strSpin });
-        }
-        else{	//если пуста
-            // вставляем записьи и получаем ее ID
-            long rowID = db.insert("mytable", null, cv);
-            Log.d(LOG_TAG_DB, "row inserted, ID = " + rowID);
-        }
-
-
-        Log.d(LOG_TAG_DB, "--- Rows in mytable: ---");
-
-
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
-        if (c.moveToFirst()) {
-
-            // определяем номера столбцов по имени в выборке
-            int routNameColIndex = c.getColumnIndex("routName");
-            int durationColIndex = c.getColumnIndex("duration");
-            int durationRealColIndex = c.getColumnIndex("durationReal");
-            int distanceColIndex = c.getColumnIndex("distance");
-            int checkReminderStatusColIndex = c.getColumnIndex("checkReminderStatus");
-
-            do {
-                // получаем значения по номерам столбцов и пишем все в лог
-                Log.d(LOG_TAG_DB,
-                        "routName = " + c.getString(routNameColIndex) +
-                                ", duration = " + c.getString(durationColIndex) +
-                                ", durationReal = " + c.getString(durationRealColIndex) +
-                                ", distance = " + c.getString(distanceColIndex) +
-                                ", checkReminderStatus = " + c.getInt(checkReminderStatusColIndex));
-                // переход на следующую строку
-                // а если следующей нет (текущая - последняя), то false - выходим из цикла
-            } while (c.moveToNext());
-        } else
-            Log.d(LOG_TAG_DB, "0 rows");
-        c.close();
-        *//*// вставляем запись и получаем ее ID
-    long rowID = db.insert("mytable", null, cv);*//*
-
-        // Log.d(LOG_TAG_DB, "row inserted, ID = " + rowID);
-        // закрываем подключение к БД
-        dbHelper.close();
-
-        frag2.setValues(routName,distance,duration,durationReal);
-    }*/
-    @Override
-    public void onClickcheckReminder(int i) {
-
-        // подключаемся к БД
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        // делаем запрос всех данных из таблицы mytable, получаем Cursor
-        Cursor c = db.query("mytable", null, null, null, null, null, null);
-
-        cv.put("checkReminderStatus", i);
-
-        int updCount = db.update("mytable", cv, "routName = ?",
-                new String[] { routName });
-        c.close();
-
-    }
-
-    @Override
-    public void onClickSaveEvent() {
-
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

@@ -49,21 +49,23 @@ import android.widget.Toast;
     Button butChoosePoint;
    
     BroadcastReceiver broadcastReceiverMap;
+	OnMarkerDragListener onMarkerDragListener;
 
-	public static final String LOG_TAG = "myLogs";
+	public static final String LOG_TAG = "mapFragmentView";
 
 	public static final String UPDATE_MAP = "update_map";
 
+	boolean markerStart = false;
 
-	public interface onSomeEventListener {
+	public interface MapViewFragmentListener {
 	    public  void choosePointEvent(LatLng latLng);
 	  }
-	onSomeEventListener someEventListener;
+	MapViewFragmentListener mapViewFragmentListener;
 	@Override
 	  public void onAttach(Activity activity) {
 	    super.onAttach(activity);
 	        try {
-	          someEventListener = (onSomeEventListener) activity;
+				mapViewFragmentListener = (MapViewFragmentListener) activity;
 	        } catch (ClassCastException e) {
 	            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
 	        }
@@ -96,9 +98,29 @@ import android.widget.Toast;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);	//��� ����� MAP_TYPE_NORMAL
     	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(
     		48.99,33.67), 5);		//��������� ��������� ����� �� ������� � ����� 5
-    	googleMap.animateCamera(cameraUpdate);	//������� ���
-    	
-    	googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+    	googleMap.animateCamera(cameraUpdate);	//������� �
+
+		onMarkerDragListener = new OnMarkerDragListener() {
+			@Override
+			public void onMarkerDragStart(Marker marker) {
+
+			}
+
+			@Override
+			public void onMarkerDrag(Marker marker) {
+
+			}
+
+			@Override
+			public void onMarkerDragEnd(Marker marker) {
+				latLngMypoint = marker.getPosition();
+			}
+		};
+
+		googleMap.setOnMarkerDragListener(onMarkerDragListener);
+		//markerStart = true;
+
+		/*googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
 
             @Override
             public void onMarkerDragStart(Marker marker) {
@@ -117,22 +139,30 @@ import android.widget.Toast;
 
             }
         });
-    	
+    	*/
         butChoosePoint.setOnClickListener(new OnClickListener() {
     	        public void onClick(View v) {
     	        	   	        	   	        	
-    	        	Log.i(LOG_TAG, "������ ������ ���������� ������� " + latLngMypoint.latitude + " " + latLngMypoint.longitude);
-    	        	someEventListener.choosePointEvent(latLngMypoint);
+    	        	Log.i(LOG_TAG, "Кнопка нажата координаты маркера" + latLngMypoint.latitude + " " + latLngMypoint.longitude);
+    	        	mapViewFragmentListener.choosePointEvent(latLngMypoint);
     	        	
-    	        	durationMapView.setVisibility(TextView.VISIBLE);
+//    	        	durationMapView.setVisibility(TextView.VISIBLE);
     	        	durationMap.setVisibility(TextView.VISIBLE);
-    	        	distanceMapView.setVisibility(TextView.VISIBLE);
+    	        //	distanceMapView.setVisibility(TextView.VISIBLE);
     	        	distanceMap.setVisibility(TextView.VISIBLE);
     	        	
     	        	butChoosePoint.setVisibility(Button.INVISIBLE);
-    	        	
-    	        	
+
+
     	        	googleMap.clear();
+
+					//try {
+					//	onMarkerDragListener.wait();
+						//markerStart = false;
+					//} catch (InterruptedException e) {
+					//	e.printStackTrace();
+					//}
+
     	        }
     	      });
 
@@ -166,14 +196,18 @@ import android.widget.Toast;
 			.title("Мое расположение").draggable(true);
     	marker = googleMap.addMarker(markerOption);
     	
-    	durationMapView.setVisibility(TextView.INVISIBLE);
+    	//durationMapView.setVisibility(TextView.INVISIBLE);
     	durationMap.setVisibility(TextView.INVISIBLE);
-    	distanceMapView.setVisibility(TextView.INVISIBLE);
+    	//distanceMapView.setVisibility(TextView.INVISIBLE);
     	distanceMap.setVisibility(TextView.INVISIBLE);
   
     	butChoosePoint.setVisibility(Button.VISIBLE);
-    	
-    	
+
+		//googleMap.set
+
+		//if(!markerStart) {
+		//	onMarkerDragListener.notify();
+		//}
     	    	
     	Toast.makeText(getActivity(), "Выберите точку на карте и нажмите кнопку", Toast.LENGTH_LONG).show();
     	Log.i(LOG_TAG, "Метод создания маркера");
@@ -208,7 +242,7 @@ import android.widget.Toast;
  	    CameraUpdate track = CameraUpdateFactory.newLatLngBounds(latLngBounds, size, size, 100);
  	    googleMap.animateCamera(track);		//�������������� �����������
 
-			 Log.i(LOG_TAG, "Отрисовка маршрута выполнена");
+			 Log.i(LOG_TAG, "Отрисовка маршрута выполнена.Количество точек " + mPoints.size());
          } catch (Exception e) {
 			 Log.i(LOG_TAG, "Отрисовка маршрута не удалась" + e.getMessage());
          }

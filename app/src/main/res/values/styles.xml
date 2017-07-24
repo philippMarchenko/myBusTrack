@@ -18,8 +18,21 @@
 
     <style name="MyButton" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight">#FF78CAEF</item>
+        <item name="color">#FF78CAEF</item>
+        <item name="backgroundTint">@color/accent</item>
+        <item name="backgroundTintMode">multiply</item>
         <item name="colorButtonNormal">@color/accent</item>
         <item name="android:radius">10dp</item>
+    </style>
+    <style name="MySpinner" parent="Theme.AppCompat.Light">
+        <item name="colorButtonNormal">@color/accent</item>
+        <item name="colorControlHighlight">#FF78CAEF</item>
+        <item name="color">#FF78CAEF</item>
+        <item name="backgroundTint">@color/accent</item>
+        <item name="backgroundTintMode">multiply</item>
+        <item name="android:background">@android:drawable/btn_default</item>
+        <item name="android:radius">10dp</item>
+        <item name="android:textColor">@color/primary_dark</item>
     </style>
 
 </resources>

@@ -64,6 +64,22 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.IRemin
         //recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setAdapter(reminderAdapter);
 
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(),
+                recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                //Values are passing to activity & to fragment as well
+                Toast.makeText(getContext(), "Single Click on position        :"+position,
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Toast.makeText(getContext(), "Long press on position :"+position,
+                        Toast.LENGTH_LONG).show();
+            }
+        }));
+
         Log.i(LOG_TAG,"onCreateView ReminderFragment");
 
         FloatingActionButton fab = (FloatingActionButton) rootview.findViewById(R.id.fab);

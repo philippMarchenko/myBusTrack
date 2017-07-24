@@ -21,7 +21,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
     compile 'com.mikepenz.materialdrawer:library:2.9.2@aar'
@@ -33,5 +32,5 @@ dependencies {
     compile 'biz.kasual:materialnumberpicker:1.2.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
-
+    compile 'com.weiwangcn.betterspinner:library-material:1.1.0'
 }

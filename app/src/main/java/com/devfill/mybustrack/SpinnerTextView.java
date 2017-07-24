@@ -4,11 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-public class SpinnerTextView extends TextView implements View.OnClickListener {
+import static java.security.AccessController.getContext;
+
+public class SpinnerTextView extends AppCompatTextView implements View.OnClickListener {
 
     private String mPrompt;
     private int mSelection;
@@ -38,8 +41,6 @@ public class SpinnerTextView extends TextView implements View.OnClickListener {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerTextView);
 
             mPrompt = typedArray.getString(R.styleable.SpinnerTextView_android_prompt);
-           // mEntries = typedArray.getTextArray(R.styleable.SpinnerTextView_android_entries);
-            MainActivity.mEntries = new String[]{"Саловка - Кременчук","Мотрине - Бригадирівка","Карпівка - Махнівка","Кобилячок - Пришиб", "Петрашівка - Київ"};
             typedArray.recycle();
         }
 

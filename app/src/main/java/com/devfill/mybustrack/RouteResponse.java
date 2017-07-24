@@ -1,23 +1,38 @@
 package com.devfill.mybustrack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 
 public class RouteResponse  {
-	public List<Route> routes;
+	public List<Route> routes = new ArrayList<Route>();
 
 
 	public String getPoints() {
-        return this.routes.get(0).overview_polyline.points;
+      //  if(routes.size() > 0)
+            return this.routes.get(0).overview_polyline.points;
+     //   else
+         //   return "not data";
     }
+
+
+
 	
 
     public String getDurationRout() {
-        return this.routes.get(0).legs.get(0).duration.text;
+      //  if(routes.size() > 0)
+            return this.routes.get(0).legs.get(0).duration.text;
+       // else
+         //   return "not data";
+
     }
     public String getDistanceRout() {
-        return this.routes.get(0).legs.get(0).distance.text;
+       // if(routes.size() > 0)
+            return this.routes.get(0).legs.get(0).distance.text;
+      //  else
+       //     return "not data";
+
     }
     class Route {
     	public List<Legs> legs;
