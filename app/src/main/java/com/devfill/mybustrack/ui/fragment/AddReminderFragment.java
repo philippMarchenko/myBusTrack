@@ -1,4 +1,4 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.ui.fragment;
 
 
 import android.content.ContentValues;
@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+
+import com.devfill.mybustrack.helper.DBHelper;
+import com.devfill.mybustrack.ui.MainActivity;
+import com.devfill.mybustrack.R;
+import com.devfill.mybustrack.ui.fragment.ReminderFragment;
+import com.devfill.mybustrack.helper.SpinnerTextView;
 
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
@@ -33,28 +40,19 @@ public class AddReminderFragment extends Fragment implements SpinnerTextView.ISp
 	DBHelper dbHelper;
 
 	SpinnerTextView spinnerTextView;
+	FragmentTransaction ft;
 
 	public static final String LOG_TAG_DB = "AddReminderFragmentdbLogs";
 
-
-
-	public interface IAddReminderFragment {
-	    public void onClickSaveEvent();
-	  }
-
-	IAddReminderFragment iAddReminderFragment;
-
-	public AddReminderFragment(IAddReminderFragment iAddReminderFragment){
-		this.iAddReminderFragment = iAddReminderFragment;
-	}
-
+	public AddReminderFragment(){};
 	
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	Bundle savedInstanceState) {
 
 	View rootView =  inflater.inflate(R.layout.add_reminder_fragment,container, false);
-	//  View v = inflater.inflate(R.layout.camera_fragment, parent, false);
+	final ReminderFragment reminderFragment = new ReminderFragment();
+
 	spinnerTextView = (SpinnerTextView) rootView.findViewById(R.id.spinnertextview);
 	spinnerTextView.setListener(this);
 
@@ -67,7 +65,10 @@ public class AddReminderFragment extends Fragment implements SpinnerTextView.ISp
 
 	saveReminder.setOnClickListener(new OnClickListener() {
         public void onClick(View v) {
-        	iAddReminderFragment.onClickSaveEvent();
+
+			ft = getFragmentManager().beginTransaction();
+			ft.replace(R.id.container, reminderFragment);
+			ft.commit();
 			saveReminder(MainActivity.mEntries[routePos],duration);
         }
       });

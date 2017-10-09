@@ -1,4 +1,6 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.internet;
+
+import com.devfill.mybustrack.model.RouteResponse;
 
 import java.util.List;
 

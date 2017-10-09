@@ -1,4 +1,4 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.adapter;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -33,6 +33,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.devfill.mybustrack.R;
+import com.devfill.mybustrack.model.Reminder;
 
 import java.util.Calendar;
 import java.util.List;

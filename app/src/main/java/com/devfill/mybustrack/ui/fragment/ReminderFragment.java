@@ -1,4 +1,4 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.ui.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,17 +9,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
+
+import com.devfill.mybustrack.adapter.ReminderAdapter;
+import com.devfill.mybustrack.helper.DBHelper;
+import com.devfill.mybustrack.R;
+import com.devfill.mybustrack.helper.RecyclerTouchListener;
+import com.devfill.mybustrack.model.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,39 +40,32 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.IRemin
     public static final String LOG_TAG_DB = "ReminderFragmentdbLogs";
     DBHelper dbHelper;
 
-    IReminderFragmentlistener iReminderFragmentlistener;
+    FragmentTransaction ft;
 
     BroadcastReceiver broadcastReceiver;
     public static String UPDATE_LIST = "updateList";
 
-    public interface IReminderFragmentlistener{
-        public void onClickFab();
-    }
 
-    public ReminderFragment(IReminderFragmentlistener iReminderFragmentlistener){
-        this.iReminderFragmentlistener = iReminderFragmentlistener;
-    }
-
-
+    public ReminderFragment(){}
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.reminder_fragment, container, false);
 
+        final AddReminderFragment addReminderFragment = new AddReminderFragment();
+
         recyclerView = (RecyclerView) rootview.findViewById(R.id.recycler_view_settings);
-        // recyclerView.setHasFixedSize(true);
         reminderAdapter = new ReminderAdapter(getContext(),getActivity(),reminderList,this);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        //recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setAdapter(reminderAdapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(),
                 recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, final int position) {
-                //Values are passing to activity & to fragment as well
+
                 Toast.makeText(getContext(), "Single Click on position        :"+position,
                         Toast.LENGTH_SHORT).show();
             }
@@ -86,7 +83,9 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.IRemin
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iReminderFragmentlistener.onClickFab();
+                ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, addReminderFragment);
+                ft.commit();
 
             }
         });

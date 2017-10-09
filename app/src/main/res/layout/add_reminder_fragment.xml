@@ -43,7 +43,7 @@
 		android:layout_alignLeft="@+id/setRouteId"
 		android:layout_marginTop="55dp" />
 
-	<com.devfill.mybustrack.SpinnerTextView
+	<com.devfill.mybustrack.helper.SpinnerTextView
 		android:id="@+id/spinnertextview"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

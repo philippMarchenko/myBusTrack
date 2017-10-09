@@ -1,4 +1,4 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.helper;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,6 +8,9 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
+
+import com.devfill.mybustrack.R;
+import com.devfill.mybustrack.ui.MainActivity;
 
 import static java.security.AccessController.getContext;
 
@@ -25,7 +28,10 @@ public class SpinnerTextView extends AppCompatTextView implements View.OnClickLi
         super(context);
         init(null);
     }
+    public SpinnerTextView() {
+        super(null);
 
+    }
     public SpinnerTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);

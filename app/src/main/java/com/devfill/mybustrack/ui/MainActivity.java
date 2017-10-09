@@ -1,4 +1,4 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.ui;
 
 import java.net.HttpURLConnection;
 import java.security.cert.CertificateException;
@@ -46,8 +46,21 @@ import android.widget.Toast;
 import android.text.format.Time;
 
 
+import com.devfill.mybustrack.helper.DBHelper;
+import com.devfill.mybustrack.service.DurationFinishService;
+import com.devfill.mybustrack.ui.fragment.MapViewFragment;
+import com.devfill.mybustrack.R;
+import com.devfill.mybustrack.ui.fragment.ReminderFragment;
+import com.devfill.mybustrack.ui.fragment.ReminderFragmentBase;
+import com.devfill.mybustrack.internet.RouteApi;
+import com.devfill.mybustrack.model.RouteResponse;
+import com.devfill.mybustrack.internet.TrackApi;
+import com.devfill.mybustrack.model.TrackInfo;
+import com.devfill.mybustrack.ui.fragment.AddReminderFragment;
+import com.devfill.mybustrack.ui.fragment.MapViewFragment;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.wallet.NotifyTransactionStatusRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -101,11 +114,11 @@ public class MainActivity extends AppCompatActivity implements MapViewFragment.M
     String server_name = "http://www.mkdeveloper.ru";
     String myLatitude;
     String myLongitude;
-    static String arrayPoints;
+    public static String arrayPoints;
     String routName;
-    static String durationReal;
-    static String duration;
-    static String distance;
+    public static String durationReal;
+    public  static String duration;
+    public  static String distance;
     String position = "Горишние Плавни, Полтавська область, Украина";
     String destination = "Саловка, Полтавська область, Украина";
     String myKey = "AIzaSyANI2wjsY9Vd6Oq3HAG_2gVU6tW8ZkZx9g";
@@ -123,8 +136,8 @@ public class MainActivity extends AppCompatActivity implements MapViewFragment.M
     boolean satusSetting = true;
     boolean runTimer = true;
     boolean tableIsEmpty = true;
-    static boolean sendNoty = false;
-    static boolean timerService = false;
+    public static boolean sendNoty = false;
+    public static boolean timerService = false;
     long millis = 0;
 
     LocationManager locationManager;
@@ -402,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements MapViewFragment.M
 
             Retrofit retrofit = new Retrofit.Builder()
                     // .client(getUnsafeOkHttpClient())
-                    .baseUrl("http://mkdeveloper.ru")
+                    .baseUrl("maps.mkdeveloper.ru")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
 
@@ -424,22 +437,27 @@ public class MainActivity extends AppCompatActivity implements MapViewFragment.M
                     latitudeBus = response.body().getLatitude();
                     Log.i(LOG_TAG,"substring  latitudeBus " +  latitudeBus.substring(0,2) + "\n");
 
+                    String latitudeBusv;
+                    String longitudeBusv;
 
-                    String latitudeBusv = latitudeBus.substring(2,4) + latitudeBus.substring(4,10);
-                    latitudeBusv = latitudeBusv.replaceAll("[^0-9]+", "");
-                    int latitudeBusvInt = Integer.parseInt(latitudeBusv);
-                    latitudeBusvInt = latitudeBusvInt/60;
+                    try {
+                        latitudeBusv = latitudeBus.substring(2, 4) + latitudeBus.substring(4, 10);
+                        latitudeBusv = latitudeBusv.replaceAll("[^0-9]+", "");
+                        int latitudeBusvInt = Integer.parseInt(latitudeBusv);
+                        latitudeBusvInt = latitudeBusvInt / 60;
 
-                    String longitudeBusv = longitudeBus.substring(3,5) + longitudeBus.substring(5,11);
-                    longitudeBusv = longitudeBusv.replaceAll("[^0-9]+", "");
-                    int longitudeBusvInt = Integer.parseInt(longitudeBusv);
-                    longitudeBusvInt = longitudeBusvInt/60;
+                        longitudeBusv = longitudeBus.substring(3, 5) + longitudeBus.substring(5, 11);
+                        longitudeBusv = longitudeBusv.replaceAll("[^0-9]+", "");
+                        int longitudeBusvInt = Integer.parseInt(longitudeBusv);
+                        longitudeBusvInt = longitudeBusvInt / 60;
 
+                        position = latitudeBus.substring(0,2) + "." + latitudeBusvInt + "," + longitudeBus.substring(0,3) + "." + longitudeBusvInt;
 
-                 //   position = latitudeBus.substring(0,2) + " " + latitudeBus.substring(2,4) + latitudeBus.substring(4,10) + ","
-                        //    + longitudeBus.substring(0,3) + " " + longitudeBus.substring(3,5) + longitudeBus.substring(5,11);
+                    }
+                    catch(Exception e){
+                          Toast.makeText(getBaseContext(), "Ошибка принятых координат! ", Toast.LENGTH_LONG).show();
+                    }
 
-                    position = latitudeBus.substring(0,2) + "." + latitudeBusvInt + "," + longitudeBus.substring(0,3) + "." + longitudeBusvInt;
                 }
 
                 @Override
@@ -450,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements MapViewFragment.M
         }
         catch(Exception e){
 
-            Log.i(LOG_TAG,"Ошибка REST запроса к серверу google getRoute" + e.getMessage());
+            Log.i(LOG_TAG,"Ошибка REST запроса к серверу getCoordinatesbus" + e.getMessage());
         }
     }
     private LocationListener locationListener = new LocationListener() {

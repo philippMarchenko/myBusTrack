@@ -75,7 +75,7 @@ if($event == select){
 	//echo $result;
 	//$row = mysql_fetch_assoc($result)
 		while ($row = mysql_fetch_assoc($result)) {
-		 $output[]=$row;
+		 $output=$row;
 	}
 	//echo $output[0];
 	//echo $output[1];

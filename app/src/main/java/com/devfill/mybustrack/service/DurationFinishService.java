@@ -1,4 +1,4 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.service;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -24,6 +24,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.devfill.mybustrack.ui.MainActivity;
 
 
 public class DurationFinishService extends Service implements OnLoadCompleteListener{

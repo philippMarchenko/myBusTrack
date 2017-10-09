@@ -25,8 +25,6 @@
         android:id="@+id/distanceMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/distanceMapView"
-        android:layout_alignBottom="@+id/distanceMapView"
         android:layout_alignParentLeft="true"
         android:text="@string/distanceMap" />
 

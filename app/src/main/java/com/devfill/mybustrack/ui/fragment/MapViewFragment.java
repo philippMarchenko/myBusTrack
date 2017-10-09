@@ -1,6 +1,8 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.ui.fragment;
 
 
+import com.devfill.mybustrack.R;
+import com.devfill.mybustrack.ui.MainActivity;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

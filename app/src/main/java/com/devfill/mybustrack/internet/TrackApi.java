@@ -1,4 +1,6 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.internet;
+
+import com.devfill.mybustrack.model.TrackInfo;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

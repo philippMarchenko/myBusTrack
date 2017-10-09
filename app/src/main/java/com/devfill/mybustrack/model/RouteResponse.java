@@ -1,4 +1,4 @@
-package com.devfill.mybustrack;
+package com.devfill.mybustrack.model;
 
 import java.util.ArrayList;
 import java.util.List;
